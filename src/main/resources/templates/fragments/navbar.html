@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--<link href='/webjars/bootstrap/css/bootstrap.min.css' rel='stylesheet'>-->
+
+    <meta charset="UTF-8">
+    <title>Comisaría Virtual</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="header">
+    <a class="navbar-brand" src="../static/carabineros.png" href="/"><img th:src="@{carabineros.png}" style="width: 100px; height: 100px; object-fit: contain"></a>
+    <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+            class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <span style="font-size: larger; color: #126e13;">COMISARIA VIRTUAL</span>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
+                   href="#" id="navbarDropdown" role="button">
+                    Nuevo Permiso
+                </a>
+                <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                    <a class="dropdown-item" href="/nuevo">Asistencia médica</a>
+                    <a class="dropdown-item" href="/nuevo">Paseo de mascotas</a>
+                    <!--<div class="dropdown-item-text p-4 text-muted" style="max-width: 200px;">
+                        <p>
+                            Administrative pages to list, edit, create and remove entities.
+                        </p>
+                    </div>-->
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/lista" id="lista">
+                    Lista Permisos
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!--<script src="/webjars/jquery/jquery.min.js"></script>-->
+<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

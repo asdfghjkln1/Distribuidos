@@ -1,0 +1,395 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="RLVhLO7G2DHs0jvIa4G3JlKuH4pAbBy4E6d4CRPF">
+    <title>Comisaria Virtual</title>
+</head>
+<body class="h-100">
+<div id="app" class="h-100 d-flex flex-column" >
+    <!-- <div class="alert alert-warning" role="alert">
+       Estamos realizando labores de mantenimiento en el sitio, presentará intermitencia en su funcionamiento.
+       </div> -->
+    <div class="main-container container pb-5">
+        <div class="row">
+            <div class="col-xs-12 col-md-3">
+                <ul class="simple-list-menu list-group d-none d-sm-block">
+                    <a class="list-group-item list-group-item-action  active"
+                       href="/">
+                        <i class="material-icons">insert_drive_file</i> Iniciar trámite
+                    </a>
+                </ul>
+            </div>
+            <div class="col-xs-12 col-md-9">
+                <div style="clear: both;"></div>
+                <form method="POST" enctype="multipart/form-data" action="">
+                    <input type="hidden" name="_method" value="post">
+                    <input type="hidden" name="_token" value="O4hRWDyFvjgAvHQjAX1w4YS15EWxnLM8FUHDYkI0">
+                    <div class="validacion"></div>
+                    <h1 class="title">Permiso Temporal para asistir a centros de salud</h1>
+                    <hr>
+                    <div class="campo control-group" data-id="1896"
+                         data-dependiente-campo="dependiente" style="display: block;"
+                         data-readonly="1" data-condicion="no-condition" >
+                        <p>
+                            <div class="alert alert-success" role="alert">
+                                <h3 class="alert-heading"><strong>ATENCIÓN</strong></h3>
+                                <ul>
+                                    <li>Debe tener en consideración que la duración de este Permiso Temporal tendrá una validez de 03 horas.</li>
+                                    <li>Solo podrá registrar a un acompañante, el cual deberá registrar con su RUN y Nombre completo.</li>
+                                    <li><strong>En caso que utilice este permiso para asistir a una hora médica, deberá portar y presentar el mismo comprobante que se adjunta, ya que será requerido por el personal policial o militar que se encuentre realizando el control en terreno.</strong></li>
+                                    <li><strong>No será válido en horario de toque de queda.</strong></li>
+                                </ul>
+                        <P ALIGN="justify"><strong><U>ADVERTENCIA</U>: Cualquier persona que se encuentre bajo alguna restricción sanitaria que implique aislamiento o cuarentena, por ser paciente confirmado con diagnóstico COVID19, EN ESPERA DE RESULTADOS DE EXÁMENES COVID19 Y/O PROVENIENTES DEL EXTRANJERO, no puede solicitar y/o tramitar Salvoconducto y/o Permiso Temporal alguno. </strong></P>
+
+                            </div>
+                        </p>
+                    </div>
+            <div class="campo control-group" data-id="1897"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group"><label class="control-label" for="1897">Nombre Completo</label><span class="help-block"> (Indique su nombre completo. Formato: Caaa Aaaa Paaa Caaa)</span><input id="1897"  type="text" class="form-control has-error" name="nombres_ciudadano" value="" data-modo="edicion" /></div>
+            </div>
+            <div class="campo control-group" data-id="1898"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group"><label class="control-label" for="1898">RUN</label><span class="help-block"> (Formato: sin puntos con guión. Ejemplo: 12345678-9)</span><input id="1898"  type="text" class="form-control has-error" name="rut_ciudadano" value="" data-modo="edicion" /></div>
+            </div>
+            <div class="campo control-group" data-id="2529"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group"><label class="control-label" for="2529">Indique su edad</label><input id="2529"  type="text" class="form-control has-error" name="edad" value="" data-modo="edicion" /></div>
+            </div>
+            <div class="campo control-group" data-id="1899"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <label class="control-label">Seleccione la comuna donde reside</label>
+                <div class="controls">
+                    <select class="form-control" id="regiones_1899" data-id="1899" name="comuna[region]"  style="width:100%">
+                        <option value="">Seleccione Regi&oacute;n</option>
+                    </select>
+                    <br />
+                    <select class="form-control" id="comunas_1899" data-id="1899" name="comuna[comuna]"  style="width:100%">
+                        <option value="">Seleccione Comuna</option>
+                    </select>
+                    <input type="hidden" id="cstateCode_1899" name="cstateCode_1899"><input type="hidden" id="cstateName_1899" name="cstateName_1899"><input type="hidden" id="ccityCode_1899" name="ccityCode_1899"><input type="hidden" id="ccityName_1899" name="ccityName_1899">
+                </div>
+                <script>
+                    $(document).ready(function(){
+                        var justLoadedRegion=true;
+                        var justLoadedComuna=true;
+                        var defaultRegion="";
+                        var defaultComuna="";
+                        var opcion = "nombre";
+
+                        $("#regiones_1899").chosen({placeholder_text: "Seleccione Regi\u00F3n"});
+                        $("#comunas_1899").chosen({placeholder_text: "Seleccione Comuna"});
+
+                        updateRegiones();
+
+                        function updateRegiones(){
+                            $.getJSON("https://apis.digital.gob.cl/dpa/regiones?callback=?",function(data){
+
+                                var regiones_obj = $("#regiones_1899");
+                                regiones_obj.empty();
+                                $.each(data, function(idx, el){
+                                    regiones_obj.append("<option data-id=\""+el.codigo+"\" value=\""+el.nombre+"\">"+el.nombre+"</option>");
+                                });
+
+                                regiones_obj.change(function(event){
+                                    var selectedId=$(this).find("option:selected").attr("data-id");
+                                    updateComunas(selectedId);
+                                    regiones_obj.attr("cstateCode_1899",$(this).find("option:selected").attr("data-id"));
+                                    regiones_obj.attr("cstateName_1899",regiones_obj.val());
+                                    $("#cstateCode_1899").val($(this).find("option:selected").attr("data-id"));
+                                    $("#cstateName_1899").val(regiones_obj.val());
+                                });
+
+                                if(justLoadedRegion){
+                                    regiones_obj.val(defaultRegion).change();
+                                    justLoadedRegion=false;
+                                }
+                                regiones_obj.trigger("chosen:updated");
+                            });
+                        }
+
+                        function updateComunas(regionId){
+                            var comunas_obj = $("#comunas_1899");
+                            comunas_obj.empty();
+
+                            if(typeof regionId === "undefined")
+                                return;
+
+                            $.getJSON("https://apis.digital.gob.cl/dpa/regiones/"+regionId+"/comunas?callback=?",function(data){
+                                if(data){
+                                    $.each(data, function(idx, el){
+                                        var op = el[opcion];
+                                        comunas_obj.append("<option data-id=\""+el.codigo+"\" value=\""+op+"\" >"+el.nombre+"</option>");
+                                    });
+                                }
+                                comunas_obj.trigger("chosen:updated");
+                                if(justLoadedComuna){
+                                    comunas_obj.val(defaultComuna).change();
+                                    justLoadedComuna=false;
+                                }
+                                comunas_obj.trigger("chosen:updated");
+
+                                $("#ccityCode_1899").val($(comunas_obj).find("option:selected").val());
+                                $("#ccityName_1899").val($(comunas_obj).find("option:selected").text());
+
+                                comunas_obj.change(function(event){
+                                    $("#ccityCode_1899").val($(this).find("option:selected").attr("data-id"));
+                                    $("#ccityName_1899").val($(this).find("option:selected").text());
+                                });
+                            });
+                        }
+                    });
+
+                </script>
+            </div>
+            <div class="campo control-group" data-id="1900"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group"><label class="control-label" for="1900">Domicilio</label><span class="help-block"> (Indique la dirección exacta de su domicilio)</span><input id="1900"  type="text" class="form-control has-error" name="domicilio" value="" data-modo="edicion" /></div>
+                <script>
+                    $(document).ready(function(){
+                        $("#1900").EnsureMaxLength({
+                            limit: 35
+                        });
+                    });
+                </script>
+            </div>
+            <div class="campo control-group" data-id="1901"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group">
+                    <label class="control-label">Motivo</label>
+                    <div class="form-check"><input class="form-check-input"  type="radio" name="motivo" value="Hora médica" id="hora-medica-o-tratamiento-medico"  /> <label class="form-check-label" for="hora-medica-o-tratamiento-medico">Hora médica</label></div>
+                    <div class="form-check"><input class="form-check-input"  type="radio" name="motivo" value="Vacuna" id="vacuna"  /> <label class="form-check-label" for="vacuna">Vacuna</label></div>
+                    <div class="form-check"><input class="form-check-input"  type="radio" name="motivo" value="Retiro de Medicamentos" id="retiro-de-medicamentos"  /> <label class="form-check-label" for="retiro-de-medicamentos">Retiro de medicamentos</label></div>
+                </div>
+            </div>
+
+            <div class="campo control-group" data-id="2135" data-dependiente-campo="motivo" data-dependiente-valor="Hora médica" data-dependiente-tipo="string" data-dependiente-relacion="==" style="display: none;" data-readonly="" data-condicion="no-condition">
+                <label class="control-label"></label>
+                <div class="controls">
+                    <label for="file_upload">Adjunto Respaldo Solicitud</label>
+                    <input type="file" class="form-control-file" name="file_upload" id="file_upload">
+                    <input id="2135" type="hidden" name="adjunto_respaldo_solicitud" value="" class="enabled-temp">
+                    <p class="link"></p>
+                    <span class="form-text text-muted">Comprobante de hora médica(Formato: jpg, png o pdf)</span>
+                </div>
+            </div>
+
+            <div class="campo control-group" data-id="1902"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="1" data-condicion="no-condition" >
+                <h3>Limitaciones</h3>
+            </div>
+            <div class="campo control-group" data-id="1903"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group">
+                    <label class="control-label">Trayecto</label>
+                    <div class="form-check"><input class="form-check-input"  type="radio" name="trayecto" value="Ida - Regreso"  id="Ida - Regreso"  /> <label class="form-check-label" for="Ida - Regreso">Ida-Regreso</label></div>
+                </div>
+            </div>
+            <div class="campo control-group" data-id="1904"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group"><label class="control-label" for="1904">Origen</label><span class="help-block"> (Indique desde donde inicia su trayecto)</span><input id="1904"  type="text" class="form-control has-error" name="origen" value="" data-modo="edicion" /></div>
+                <script>
+                    $(document).ready(function(){
+                        $("#1904").EnsureMaxLength({
+                            limit: 50
+                        });
+                    });
+                </script>
+            </div>
+            <div class="campo control-group" data-id="1905"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group"><label class="control-label" for="1905">Destino</label><span class="help-block"> (Indique hacia donde se dirige, nombre del Hospital, Clínica, Centro Médico, entre otros)</span><input id="1905"  type="text" class="form-control has-error" name="destino" value="" data-modo="edicion" /></div>
+                <script>
+                    $(document).ready(function(){
+                        $("#1905").EnsureMaxLength({
+                            limit: 50
+                        });
+                    });
+                </script>
+            </div>
+
+            <div class="campo control-group" data-id="2135" data-dependiente-campo="motivo" data-dependiente-valor="Hora médica" data-dependiente-tipo="string" data-dependiente-relacion="==" style="display: none;" data-readonly="" data-condicion="no-condition">
+                <div class="form-group"><label class="control-label" for="68243">Nombre Médico</label><span class="help-block"> (Ingrese nombre completo)</span><input id="68243" type="text" class="form-control has-error" name="nombre_medico" value="" data-modo="edicion"></div>
+            </div>
+
+            <div class="campo control-group" data-id="2135" data-dependiente-campo="motivo" data-dependiente-valor="Hora médica" data-dependiente-tipo="string" data-dependiente-relacion="==" style="display: none;" data-readonly="" data-condicion="no-condition">
+                <div class="form-group"><label class="control-label" for="68244">Hora Médica (es responsabilidad del ciudadano ingresar una hora válida. Ejemplo: 09:30 o 21:30)</label><span class="help-block"></span><input id="68244" type="text" maxlength="5" class="form-control has-error" name="hora_medica" value="" data-modo="edicion"></div>
+            </div>
+
+            <div class="campo control-group" data-id="1906"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="1" data-condicion="no-condition" >
+                <div class="form-group"><label class="control-label" for="1906">Fecha desde</label><input id="1906" readonly type="text" class="form-control has-error" name="fecha_desde" value="10-05-2020" data-modo="visualizacion" /></div>
+            </div>
+            <div class="campo control-group" data-id="1907"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="1" data-condicion="no-condition" >
+                <div class="form-group"><label class="control-label" for="1907">Hora desde</label><input id="1907" readonly type="text" class="form-control has-error" name="hora_desde" value="" data-modo="visualizacion" /></div>
+            </div>
+            <div class="campo control-group" data-id="1901"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group">
+                    <label class="control-label">¿Requiere acompañante?</label>
+                    <div class="form-check"><input class="form-check-input" type="radio" name="requiere_acompanante" value="si" id="si" /> <label class="form-check-label" for="si">Si</label></div>
+                    <div class="form-check"><input class="form-check-input" type="radio" name="requiere_acompanante" value="no" id="no" /> <label class="form-check-label" for="no">No</label></div>
+                </div>
+            </div>
+            <div class="campo control-group" data-id="2144" data-dependiente-campo="requiere_acompanante" data-dependiente-valor="si" data-dependiente-tipo="string" data-dependiente-relacion="==" style="" data-readonly="1" data-condicion="no-condition">
+                <h4>Datos Acompañante</h4>
+            </div>
+            <div class="campo control-group" data-id="2145" data-dependiente-campo="requiere_acompanante" data-dependiente-valor="si" data-dependiente-tipo="string" data-dependiente-relacion="==" style="" data-readonly="" data-condicion="no-condition">
+                <div class="form-group"><label class="control-label" for="2145">Nombre acompañante</label><span class="help-block"> (Ingrese nombre completo)</span><input id="2145" type="text" class="form-control has-error enabled-temp" name="nombre_acompaante" value="" data-modo="edicion"></div>
+            </div>
+            <div class="campo control-group" data-id="2146" data-dependiente-campo="requiere_acompanante" data-dependiente-valor="si" data-dependiente-tipo="string" data-dependiente-relacion="==" style="" data-readonly="" data-condicion="no-condition">
+                <div class="form-group"><label class="control-label" for="2146">RUN Acompañante</label><span class="help-block"> (Formato: sin puntos con guión. Ejemplo: 12345678-9)</span><input id="2146" type="text" class="form-control has-error enabled-temp" name="rut_acompaante" value="" data-modo="edicion"></div>
+            </div>
+            <!-- modificaciones hijos vacuna -->
+            <div class="campo control-group" data-id="2116" data-dependiente-campo="motivo" data-dependiente-valor="Vacuna" data-dependiente-tipo="string" data-dependiente-relacion="==" style="" data-readonly="1" data-condicion="no-condition">
+                <p>Para casos de padres que requieran realizar el proceso de vacunación con más de un hijo, podrá hacerlo con <strong>a lo más 3 personas</strong>, además del acompañante indicado en ítem anterior.</p>
+            </div>
+
+            <div class="campo control-group" data-id="68241" data-dependiente-campo="dependiente" style="display: block;" data-readonly="" data-condicion="requiere_acompanante;==;si;string&amp;&amp;motivo;==;Vacuna;string">
+                <div class="form-group"><label class="control-label">¿Requiere agregar otros hijos para asistir al proceso de vacunación?</label><div class="form-check"><input class="form-check-input" type="radio" name="requiere_agregar_hijos" value="Si" id="Si"> <label class="form-check-label" for="Si">Si</label></div><div class="form-check"><input class="form-check-input" type="radio" name="requiere_agregar_hijos" value="No" id="No"> <label class="form-check-label" for="No">No</label></div></div>
+            </div>
+
+            <div class="campo control-group" data-id="68242" data-dependiente-campo="dependiente" style="display: block;" data-readonly="" data-condicion="requiere_acompanante;==;si;string&amp;&amp;requiere_agregar_hijos;==;Si;string&amp;&amp;motivo;==;Vacuna;string">
+                <div class="form-group"><label class="control-label">Seleccione la cantidad de hijos que asistirán al proceso de vacunación</label><div class="form-check"><input class="form-check-input" type="radio" name="hijos" value="1" id="1"> <label class="form-check-label" for="1">1</label></div><div class="form-check"><input class="form-check-input" type="radio" name="hijos" value="2" id="2"> <label class="form-check-label" for="2">2</label></div><div class="form-check"><input class="form-check-input" type="radio" name="hijos" value="3" id="3"> <label class="form-check-label" for="3">3</label></div></div>
+            </div>
+
+            <div class="campo control-group" data-id="68243" data-dependiente-campo="dependiente" style="display: block;" data-readonly="" data-condicion="requiere_acompanante;==;si;string&amp;&amp;requiere_agregar_hijos;==;Si;string&amp;&amp;hijos;==;['1''2''3'];regex&amp;&amp;motivo;==;Vacuna;string">
+                <div class="form-group"><label class="control-label" for="68243">Nombre Hijo 1</label><span class="help-block"> (Ingrese nombre completo)</span><input id="68243" type="text" class="form-control has-error" name="nombre_hijo_1" value="" data-modo="edicion"></div>
+            </div>
+
+            <div class="campo control-group" data-id="68244" data-dependiente-campo="dependiente" style="display: block;" data-readonly="" data-condicion="requiere_acompanante;==;si;string&amp;&amp;requiere_agregar_hijos;==;Si;string&amp;&amp;hijos;==;['1''2''3'];regex&amp;&amp;motivo;==;Vacuna;string">
+                <div class="form-group"><label class="control-label" for="68244">RUN Hijo 1</label><span class="help-block"> (Formato: sin puntos con guión. Ejemplo: 12345678-9)</span><input id="68244" type="text" class="form-control has-error" name="run_hijo_1" value="" data-modo="edicion"></div>
+            </div>
+
+            <div class="campo control-group" data-id="68245" data-dependiente-campo="dependiente" style="display: block;" data-readonly="" data-condicion="requiere_acompanante;==;si;string&amp;&amp;requiere_agregar_hijos;==;Si;string&amp;&amp;hijos;==;['2''3'];regex&amp;&amp;motivo;==;Vacuna;string">
+                <div class="form-group"><label class="control-label" for="68245">Nombre Hijo 2</label><span class="help-block"> (Ingrese nombre completo)</span><input id="68245" type="text" class="form-control has-error" name="nombre_hijo_2" value="" data-modo="edicion"></div>
+            </div>
+
+            <div class="campo control-group" data-id="68246" data-dependiente-campo="dependiente" style="display: block;" data-readonly="" data-condicion="requiere_acompanante;==;si;string&amp;&amp;requiere_agregar_hijos;==;Si;string&amp;&amp;hijos;==;['2''3'];regex&amp;&amp;motivo;==;Vacuna;string">
+                <div class="form-group"><label class="control-label" for="68246">RUN Hijo 2</label><span class="help-block"> (Formato: sin puntos con guión. Ejemplo: 12345678-9)</span><input id="68246" type="text" class="form-control has-error" name="run_hijo_2" value="" data-modo="edicion"></div>
+            </div>
+
+            <div class="campo control-group" data-id="68247" data-dependiente-campo="dependiente" style="display: block;" data-readonly="" data-condicion="requiere_acompanante;==;si;string&amp;&amp;requiere_agregar_hijos;==;Si;string&amp;&amp;hijos;==;['3'];regex&amp;&amp;motivo;==;Vacuna;string">
+                <div class="form-group"><label class="control-label" for="68247">Nombre Hijo 3</label><span class="help-block"> (Ingrese nombre completo)</span><input id="68247" type="text" class="form-control has-error" name="nombre_hijo_3" value="" data-modo="edicion"></div>
+            </div>
+
+            <div class="campo control-group" data-id="68248" data-dependiente-campo="dependiente" style="display: block;" data-readonly="" data-condicion="requiere_acompanante;==;si;string&amp;&amp;requiere_agregar_hijos;==;Si;string&amp;&amp;hijos;==;['3'];regex&amp;&amp;motivo;==;Vacuna;string">
+                <div class="form-group"><label class="control-label" for="68248">RUN Hijo 3</label><span class="help-block"> (Formato: sin puntos con guión. Ejemplo: 12345678-9)</span><input id="68248" type="text" class="form-control has-error" name="run_hijo_3" value="" data-modo="edicion"></div>
+            </div>
+            <!-- fin modificaciones hijos vacuna -->
+            <div class="campo control-group" data-id="2403"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group">
+                    <label class="control-label">¿Desea recibir una copia en su correo electrónico?</label>
+                    <div class="form-check"><input class="form-check-input"  type="radio" name="copia" value="Si"  id="Si"  /> <label class="form-check-label" for="Si">Si</label></div>
+                    <div class="form-check"><input class="form-check-input"  type="radio" name="copia" value="No"  id="No"  /> <label class="form-check-label" for="No">No</label></div>
+                </div>
+            </div>
+            <div class="campo control-group" data-id="2404"
+                 data-dependiente-campo="copia" data-dependiente-valor="Si" data-dependiente-tipo="string" data-dependiente-relacion="==" style="display: none;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group"><label class="control-label" for="2404">Correo Electrónico</label><input id="2404"  type="text" class="form-control has-error" name="correo_electronico" value="" data-modo="edicion" /></div>
+            </div>
+            <div class="campo control-group" data-id="1908"
+                 data-dependiente-campo="dependiente" style="display: block;"
+                 data-readonly="" data-condicion="no-condition" >
+                <div class="form-group">
+                    <label class="control-label">Declaración Jurada</label>
+                    <div class="form-check"><input class="form-check-input"  type="radio" name="declaracion" value="en_caso_de_comprobarse_falsedad_en_la_declaracion_de_la_causal_invocada_para_requerir_el_presente_documento_se_incurrira_en_las_penas_del_art_210_del_codigo_penal"  id="en_caso_de_comprobarse_falsedad_en_la_declaracion_de_la_causal_invocada_para_requerir_el_presente_documento_se_incurrira_en_las_penas_del_art_210_del_codigo_penal"  /> <label class="form-check-label" for="en_caso_de_comprobarse_falsedad_en_la_declaracion_de_la_causal_invocada_para_requerir_el_presente_documento_se_incurrira_en_las_penas_del_art_210_del_codigo_penal">En caso de comprobarse falsedad en la declaración de la causal invocada, para requerir el presente documento, se incurrirá en las penas del Artículo 210 del Código Penal.</label></div>
+                </div>
+            </div>
+            <div class="g-recaptcha" data-sitekey="6Lfk0vYUAAAAALqqLVeItl7Um1toRhqHrWRWrZWq"></div>
+            <div class="form-actions mt-3 simple-btn-actions">
+                <button class="btn btn-danger" type="submit">Siguiente</button>
+            </div>
+            <input type="hidden" name="secuencia" value="0">
+            <div class="ajaxLoader" style="position: fixed; left: 50%; top: 30%; display: none;">
+                <img src="../../img/loading.gif">
+            </div>
+            <input id="file_name" type="hidden" name="file_name">
+            <input id="file_ext" type="hidden" name="file_ext">
+            <!--ID ANAlYTICS POR TAREA DEL TTE-->
+            <!--ID ANAlYTICS POR TAREA DEL TTE-->
+            </form>
+            <div id="modalcalendar" class="modal hide modalconfg modcalejec"></div>
+            <input type="hidden" id="urlbase" value="/"/>
+        </div>
+    </div>
+</div>
+<footer class="footer mt-auto py-3" style="background-color: #007328;" >
+    <div class="container">
+        <div class="row">
+            <div class="col-6 mt-1">
+                <a href="http://www.carabineros.cl/" target="_blank">
+                    Comisaría Virtual - Carabineros de Chile
+                </a>
+                <br>
+                <a href="http://digital.gob.cl/" target="_blank">
+                    Powered by División de Gobierno Digital
+                </a>
+                <br><br>
+                <a href="https://comisariavirtual.cl/politica-privacidad.html">Política de Privacidad</a>
+                <br>
+                <br>
+            </div>
+            <div class="col-6 mt-1 text-right">
+                <p style="font-size: 14px;line-height: 26px;">
+                    Si el sistema presenta problemas comuníquese con nosotros escribiendo al siguiente correo
+                    comisaria.virtual@carabineros.cl
+                </p>
+            </div>
+        </div>
+        <div class="bicolor">
+            <span class="azul"></span>
+            <span class="rojo"></span>
+        </div>
+    </div>
+</footer>
+</div>
+<!--<script src="../../js/helpers/s3_upload.js"></script>
+<script src="../../js/helpers/fileuploader.js"></script>
+<script src="../../js/helpers/handsontable.full.min.js"></script>
+<script type="text/javascript"
+        src="../../js/helpers/calendar/components/underscore/underscore-min.js"></script>
+<script type="text/javascript"
+        src="../../js/helpers/calendar/components/jstimezonedetect/jstz.min.js"></script>
+<script type="text/javascript" src="../../js/helpers/calendar/js/language/es-CO.js"></script>
+<script type="text/javascript" src="../../js/helpers/calendar/js/calendar.js?v=0.3"></script>
+<script src="../../js/helpers/collapse.js"></script>
+<script src="../../js/helpers/transition.js"></script>-->
+
+<script>
+    $(function () {
+        $(document).ready(function(){
+            $("#1907").val("El permiso tendrá validez después de 15 minutos de emitido");
+            $("#1906").val(moment().format("DD-MM-YYYY"));
+            $('#cierreSesion').click(function (){
+                $.ajax({ url: 'https://api.claveunica.gob.cl/api/v1/accounts/app/logout', dataType: 'script' }) .always(function() {
+                    window.location.href = '/logout';
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>
