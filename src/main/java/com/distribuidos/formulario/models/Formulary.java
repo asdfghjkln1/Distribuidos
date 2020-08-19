@@ -1,11 +1,11 @@
 package com.distribuidos.formulario.models;
 
-import com.mongodb.lang.NonNull;
-import com.sun.istack.internal.NotNull;
+import com.fasterxml.jackson.annotation.JsonFormat;
+//import org.jetbrains.annotations.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Document
 public class Formulary {
@@ -13,22 +13,17 @@ public class Formulary {
     @Id
     private String id;
 
-    @NonNull
     private String name;
 
-    @NotNull
     private String rut;
 
-    @NotNull
     private String motive;
 
-    @NotNull
-    private Date requestTime;
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm")
+    private LocalDateTime requestTime;
 
-    @NotNull
-    private Date expirationTime;
-
-    //public Formulary(){ }
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm")
+    private LocalDateTime expirationTime;
 
 
     public String getId(){
@@ -49,11 +44,11 @@ public class Formulary {
 
     public void setMotive(String motive) { this.motive = motive;  }
 
-    public Date getRequestTime() { return requestTime;  }
+    public LocalDateTime getRequestTime() { return requestTime;  }
 
-    public void setRequestTime(Date requestTime) {  this.requestTime = requestTime;  }
+    public void setRequestTime(LocalDateTime requestTime) {  this.requestTime = requestTime;  }
 
-    public Date getExpirationTime() {  return expirationTime; }
+    public LocalDateTime getExpirationTime() {  return expirationTime; }
 
-    public void setExpirationTime(Date expirationTime) {  this.expirationTime = expirationTime;  }
+    public void setExpirationTime(LocalDateTime expirationTime) {  this.expirationTime = expirationTime;  }
 }
