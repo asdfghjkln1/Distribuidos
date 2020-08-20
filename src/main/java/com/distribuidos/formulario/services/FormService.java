@@ -17,7 +17,12 @@ public class FormService {
         return formRepository.findAll();
     }
 
-    public void newForm(Formulary form){  this.formRepository.save(form); }
+    public void newForm(Formulary form){
+        System.out.println("------------------------------------------\nSaving form in repository...");
+        Formulary f = this.formRepository.save(form);
+        System.out.println("Finished!! Testing response:");
+        System.out.println(f.toString());
+    }
 
     public Formulary viewForm(String id){
         return this.formRepository.findById(id).get();
