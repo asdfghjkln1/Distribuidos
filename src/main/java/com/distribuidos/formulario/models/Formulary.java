@@ -2,6 +2,7 @@ package com.distribuidos.formulario.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 //import org.jetbrains.annotations.NotNull;
+import com.mongodb.lang.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,9 +16,13 @@ public class Formulary {
 
     private String name;
 
+    private String address;
+
     private String rut;
 
     private String motive;
+
+    private Boolean is_valid = true;
 
     @JsonFormat(pattern="dd-MM-yyyy HH:mm")
     private LocalDateTime requestTime;
@@ -51,4 +56,12 @@ public class Formulary {
     public LocalDateTime getExpirationTime() {  return expirationTime; }
 
     public void setExpirationTime(LocalDateTime expirationTime) {  this.expirationTime = expirationTime;  }
+
+    public String getAddress() { return address; }
+
+    public void setAddress(String address) { this.address = address; }
+
+    public Boolean getIs_valid() { return is_valid; }
+
+    public void setIs_valid(Boolean is_valid) { this.is_valid = is_valid; }
 }

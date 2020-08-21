@@ -62,6 +62,31 @@
             <input type="button" class="btn btn-success" value="Enviar" v-on:click="checkForm">
         </form>
     </div>
+
+
+    <div class="modal fade" id="response-modal" aria-labelledby="modal-label" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Permiso temporal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{formResultText}}</p>
+                <div v-if="resultId != ''">
+                    <p class="">El número de identificador del la solicitud es:</p>
+                    <b><a :href="'/validar/' + resultId">{{resultId}}</a></b>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a v-if="resultId != ''" type="button" :href="'/validar/' + resultId" class="btn btn-primary">Validar permiso</a>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 <style>
     #app{
@@ -81,8 +106,8 @@
 </style>
 <script src="/webjars/jquery/jquery.min.js"></script>
 <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-<script src="webjars/vue/vue.min.js"></script>
-<script src="webjars/axios/dist/axios.min.js"></script>
+<script src="/webjars/vue/vue.min.js"></script>
+<script src="/webjars/axios/dist/axios.min.js"></script>
 
 <script type="text/babel">
     var app = new Vue({
@@ -93,14 +118,15 @@
                 rut: '',
                 address: '',
                 motive: '',
-
+                resultId: '',
                 errors: {
                     hasErrors: false,
                     name: '',
                     rut: '',
                     motive: '',
                     address: '',
-                }
+                },
+                formResultText: '',
             }
         },
         methods: {
@@ -111,9 +137,18 @@
                     rut: this.rut,
                     address: this.address,
                     motive: this.motive
-                }
-                axios.post('http://localhost:8080/api/create', form).then((result) => {
-                    console.log(result.body.toString());
+                };
+                /*var headers = {
+                    'Content-Type': 'application/json'
+                };*/
+                axios.post('http://localhost:8080/api/create', form).then(function(result) {
+                    console.log('Got response:');
+                    console.log(result.data);
+                    this.resultId = result.data;
+                    this.formResultText = "Permiso generado con éxito!";
+                    $('#response-modal').modal();
+                }.bind(this)).catch(function(error){
+                    console.log(error);
                 });
                 return true;
             },
