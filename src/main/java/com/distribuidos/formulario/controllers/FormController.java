@@ -17,12 +17,13 @@ public class FormController {
     @Autowired
     FormService formService;
 
+    @CrossOrigin(origins = "mongo")
     @GetMapping(value = "/all")
     public List<Formulary> view() {
         return this.formService.listForms();
     }
 
-    //@CrossOrigin(origins = "mongo:27017")
+    @CrossOrigin(origins = "http://167.172.244.128:27017")
     @PostMapping(value = "/create")
     public String create(@RequestBody Formulary form) {
         OffsetDateTime date = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.of("-4"));
