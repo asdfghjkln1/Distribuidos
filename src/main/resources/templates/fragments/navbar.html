@@ -9,7 +9,7 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="header">
-    <a class="navbar-brand" src="../static/carabineros.png" href="/"><img th:src="@{carabineros.png}" style="width: 100px; height: 100px; object-fit: contain"></a>
+    <a class="navbar-brand" src="../static/carabineros.png" href="/"><img th:src="@{/carabineros.png}" style="width: 100px; height: 100px; object-fit: contain"></a>
     <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
             class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
         <span class="navbar-toggler-icon"></span>
@@ -24,7 +24,6 @@
                 </a>
                 <div aria-labelledby="navbarDropdown" class="dropdown-menu">
                     <a class="dropdown-item" href="/nuevo">Asistencia médica</a>
-                    <a class="dropdown-item" href="/nuevo">Paseo de mascotas</a>
                     <!--<div class="dropdown-item-text p-4 text-muted" style="max-width: 200px;">
                         <p>
                             Administrative pages to list, edit, create and remove entities.
@@ -33,8 +32,8 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/lista" id="lista">
-                    Lista Permisos
+                <a class="nav-link" href="/api/all" id="lista">
+                    Lista Permisos (JSON)
                 </a>
             </li>
         </ul>
