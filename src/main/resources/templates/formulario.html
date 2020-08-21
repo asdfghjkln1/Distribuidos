@@ -141,7 +141,7 @@
                 /*var headers = {
                     'Content-Type': 'application/json'
                 };*/
-                axios.post('http://localhost:8080/api/create', form).then(function(result) {
+                axios.post('http://167.172.244.128/:8080/api/create', form).then(function(result) {
                     console.log('Got response:');
                     console.log(result.data);
                     this.resultId = result.data;
