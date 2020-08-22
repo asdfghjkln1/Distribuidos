@@ -1,0 +1,34 @@
+version: '3'
+services:
+  spring_api:
+    build: ./Distribuidos
+    image: form_api
+#    environment:
+#      DATABASE_NAME: form
+#      MONGO_URL: mongodb://mongo:27017/form
+#      DATABASE_USERNAME: distribuidos
+#      DATABASE_PASSWORD: 123
+#      MONGO_PORT: 27017
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongo
+    container_name: spring_api
+    networks:
+      - subnet
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+#    environment:
+#      MONGO_INITDB_DATABASE: form
+#      MONGO_INITDB_ROOT_USERNAME: distribuidos
+#      MONGO_INITDB_ROOT_PASSWORD: 123
+    ports:
+      - 27017:27017
+    networks:
+      - subnet
+    volumes:
+      - ./data:/data/db
+#      - ./mongodb/init.js:/docker-entrypoint-initdb.d/init.js:ro
+networks:
+  subnet:
