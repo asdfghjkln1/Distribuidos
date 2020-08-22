@@ -94,7 +94,7 @@
                 var headers = {
                     'Content-Type': 'application/json'
                 };
-                axios.get('http://localhost:8080/api/viewForm', form).then(function(result) {
+                axios.get('http://167.172.244.128:8080/api/viewForm', form).then(function(result) {
                     console.log('Got response:');
                     console.log(result.data);
                     this.resultId = result.data;
