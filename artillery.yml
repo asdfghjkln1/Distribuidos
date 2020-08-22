@@ -1,0 +1,56 @@
+config:
+  target: "http://167.172.244.128:8080"
+  phases:
+    - duration: 10
+      arrivalRate: 1
+  payload:
+    path: "form_values.csv"
+    fields:
+      - "id"
+      - "name"
+      - "rut"
+      - "motive"
+      - "address"
+  environments:
+    low:
+      phases:
+        - duration: 60
+          arrivalRate: 2
+    medium:
+      phases:
+        - duration: 10
+          arrivalRate: 5
+          rampTo: 10
+        - duration: 60
+          arrivalRate: 10
+    high:
+      phases:
+        - duration: 120
+          arrivalRate: 10
+        - duration: 60
+          arrivalCount: 120
+scenarios:
+  - name: "Fill and send form"
+    flow:
+      -get:
+        url: "/"
+      -think: 3
+      -get:
+        url: "/nuevo"
+      -think: 10
+      -post:
+        url: "/api/create"
+        json:
+          id: "{{id}}"
+          name: "{{name}}"
+          rut: "{{rut}}"
+          motive: "{{motive}}"
+          address: "{{address}}"
+        capture:
+          json: "$"
+          as: "requestId"
+      -log: "Got id: {{requestId}}"
+      -think: 5
+      -get:
+        url: "/validate/{{requestId}}"
+
