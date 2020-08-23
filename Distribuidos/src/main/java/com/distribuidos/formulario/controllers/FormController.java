@@ -25,7 +25,7 @@ public class FormController {
 
     @CrossOrigin
     @PostMapping(value = "/create")
-    public String create(@RequestBody Formulary form) {
+    public Formulary create(@RequestBody Formulary form) {
         OffsetDateTime date = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.of("-4"));
         LocalDateTime startDate = date.toLocalDateTime();
         LocalDateTime endDate = startDate.plusMinutes(30);
