@@ -8,11 +8,11 @@ Documentación sobre la arquitectura de los casos de estudio (PEP) Distribuidos 
 - Introducción
 - Tecnologías utilizadas
 - PEP1
--- Arquitectura
--- Análisis sistema distribuido
--- Experimentos
--- Resultados
--- Conclusiones y propuestas
+    - Arquitectura
+    - Análisis sistema distribuido
+    - Experimentos
+    - Resultados
+    - Conclusiones
 
 # Introducción
 
@@ -21,14 +21,16 @@ En los últimos meses, muchos sistemas de información se han puesto a prueba en
 ![Visitas](http://www.marketersbyadlatina.com/uploads/-4151-ComScore-2.jpg)(http://www.marketersbyadlatina.com/articulo/6518-el-coronavirus-gener%C3%B3-subas-en-visitas-a-sitios-web-de-diversos-rubros)
 
 Los sistemas de aplicaciones web durante los semestres anteriores de la carrera se han focalizado para familiarizarse con las herramientas y tecnologías de software, para aplicarlas en un ambiente controlado local o remoto. Sin embargo en el proceso de despliegue en aplicaciones del mundo real el panorama es muy distinto. El objetivo de este caso de estudio es analizar un sistema de aplicación web desde el paradigma de los sistemas distribuidos de gran escala, identificando falencias y posibles problemas que puede traer una arquitectura, para proponer y desarrollar soluciones. 
+
+En este caso de estudio se emula la página web [Comisaría Virtual](https://comisariavirtual.cl/), en el proceso de solicitud de permisos temporales. La aplicación cuenta con una página "landing", una página con el formulario, y una página para comprobar la validación del permiso.
+
 En esta sección se encuentra la documentación respecto a la primera entrega (PEP1) del sistema distribuido.
 
 # Tecnologías utilizadas
 
 #### Backend: Spring Boot
 
-![](https://miro.medium.com/max/600/1*usQX20oLxChIAupsuRi7GQ.png)
-Framework de Java
+Framework de Java que simplifica en gran medida el desarrollo las aplicaciones de Java, en especial para configuraciones y funcionalidades CRUD. La ventaja es que permite tener una estructura modular (Modelo-Repositorio-Controlador-Servicio) que organiza el desarrollo. También simplifica las conexiones con componentes externos como bases de datos.
 
 #### Front: Thymeleaf
 ![](https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/115814492/original/f8c65a196e1fb159ffc0cdd6b0b897bd30e02399/do-a-spring-boot-thymeleaf-task-for-you.png)
@@ -44,13 +46,13 @@ Ya que se trata de una aplicación simple en términos de vistas (sólo vista pr
 
 ![](https://cdn2.auth0.com/blog/vuejs/logo.png)
 
-Vue es un framework de JavaScript que es útil para construir single page applications (SPA) y es un software centrado principalmente para la creación de las vistas de la aplicación. Se cuenta con experiencia en el uso de Vue, por lo que se utilizarla en conjunto con Thymeleaf para el renderizado de las vistas.
+Vue es un framework de JavaScript que es útil para construir single page applications (SPA) y es un software centrado principalmente para la creación de las vistas de la aplicación. Se cuenta con experiencia en el uso de Vue, por lo que se utilizará en conjunto con Thymeleaf para el renderizado de las vistas.
 
 #### MongoDB
 
 ![](https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRxscOaGYIFYKsrgioo7pzV7YpbpkUOJgDe2A&usqp=CAU)
 
-MongoDB es una base de datos noSQL capaz de manejar grandes cantidades de datos , lo que lo hace ideal para sistemas de escala. En este caso de estudio se trabaja con un modelo simple de formulario. Al ser una estructura simple y sin relaciones, una base de datos de documentos sería la opción más adecuada y flexible en cuanto a su estructura schema-less modificable fácilmente en caso de ser requerido. 
+MongoDB es una base de datos noSQL capaz de manejar grandes cantidades de datos, lo que lo hace ideal para sistemas de escala. En este caso de estudio se trabaja con un modelo simple de formulario. Esta estructura al ser simple y sin relaciones, se considera que una base de datos de documentos sería la opción más adecuada. Además, Mongo es flexible en cuanto a su estructura schema-less modificable fácilmente en caso de ser requerido (facilita el desarrollo). A continuación se muestra el modelo en Java que representa el Objeto guardado en MongoDB.
 
 ```java
  # models/Formulary.java
@@ -72,9 +74,23 @@ Docker es una plataforma de virtualización que permite modularizar aplicacióne
 
 # PEP1
 
+## Acceso a la página web
+
+Para acceder a la aplicación, dirigirse a http://167.172.244.128:8080/. La página principal se encuentra vacía, debe utilizar el navegador en la parte superior para acceder al formulario. Para acceder a la validación, se debe crear un formulario y utilizar el link que le aparece luego de enviar el formulario.
+
 ## Arquitectura
 
 Aquí se muestra el diagrama arquitectural de la aplicación.
+
+![](./artillery/deploy_pep1.png)
+
+El servidor tiene las siguientes características:
+- Arquitectura: Ubuntu 18.04 (LTS) x64 (VM compartida)
+- 1 CPU (sin información del procesador)
+- Memoria: 1GB RAM
+- Almacenamiento: 25GB SSD
+- Nombre cluster: NY3 (New York)
+- IPv4: 167.172.244.128
 
 ## Análisis sistema distribuido
 
@@ -96,7 +112,7 @@ POST 167.172.244.128/api/create
 
 Existen varias dimensiones en que la transparencia de un sistema entra en juego. Se presenta una tabla resumen de cada uno de ellos, y su posterior análisis:
 
-| Dimensión | Descripción
+| Dimensión | Descripción |
 | -- | -- |
 | Acceso | Acceso a recursos es único para el usuario, independiente del modo acceso a recursos utilizado dentro del sistema |
 | Ubicación | Desconocimiento de la ubicación física de los recursos |
@@ -121,7 +137,7 @@ Existen varias dimensiones en que la transparencia de un sistema entra en juego.
 El sistema posee una estructura simple de utilizar. En términos de un sistema distribuido, no se requiere el uso de llamadas a procesos remotos (RPC) ya que docker compose crea una red virtual que une a los contenedores para que se comuniquen como si estuvieran en la misma máquina (estar en contenedores los aisla unos de otros), reduciendo la complejidad significativamente. El hecho de estar conformado por módulos estáticos (IP y puertos únicos), y trabajar con mensajes universales JSON quita la necesidad del uso de emplear lenguajes de definición de interfaces (IDL) y cualquier tipo de Broker intermediario.
 
 - **Interoperabilidad:** No implementa medios de interoperabilidad a un sistema o cluster externo, el proceso de conexión debe hacerse manualmente por medio de la IP y puertos del servidor.
-- **Portabilidad:** Este sistema es altamente portable gracias a estar desplegado en Docker, creados automáticamente a través de scripts (Dockerfile y deployement.yml). Los requisitos de portabilidad son: (1) Instalar Docker, (2) Instalar Git, (3) Instalar Maven
+- **Portabilidad:** Este sistema es altamente portable gracias a estar desplegado en Docker, creados automáticamente a través de scripts (Dockerfile y deployement.yml). Los requisitos de portabilidad son: (1) Instalar Docker, (2) Instalar Git
 - **Facil extensión:**: Gracias a la red creada docker compose, agregar componentes dockerizados es sencillo, ya que basta con incluirlos dentro del archivo deployement.yml, sin necesidad de especificar las IP dentro cada una de las aplicaciones del sistema, ya que cuenta con un [sistema de resolución de IP](https://docs.docker.com/compose/networking/) en base al nombre de los servicios . 
 
 #### Escalabilidad
@@ -131,29 +147,130 @@ Una capacidad esencial de un sistema distribuido es su capacidad de escalar para
 - **Vertical:** El servidor es monolítico, dentro de un sólo servidor físico, por lo que se beneficia en gran medida del crecimiento vertical (Se puede contratar un mejor plan de recursos). Actualmente se cuenta con sólo 1 GB de RAM, corriendo varias 2 instancias de Docker, por lo que no soportaría un sistema real de consultas. La ventaja de este sistema es que se reduce lo más posible el overhead de la comunicación entre Frontend y Backend. Esto ideal cuando no se cuenta con la posibilidad de escalar horizontalmente y se quiere una menor latencia pero indeseable para un sistema real cuando la alta disponibilidad es necesaria, ya que fallos en un componente significan fallos fatales en el sistema completo. 
 - **Horizontal:** Ya que no existe presupuesto para más de un servidor, un escalamiento horizontal para separación de componentes en múltiples máquinas no es posible (Frontend, Backend, DB, o separando módulos de validación y creación de formularios como microservicios). La opción más viable para enfrentar este problema es la replicación de contenedores utilizando Kubernetes, de manera que se implemente un balanceo de carga y se optimice el tiempo de uso de los recursos disponibles.
 
-#### Experimentos
+## Experimentos
 
-Para poner a prueba las capacidades de este sistema, se emplearon pruebas de carga con [Artillery.io](https://artillery.io/)
+Para poner a prueba las capacidades de este sistema, se emplearon pruebas de carga con [Artillery.io](https://artillery.io/). Esta herramienta de sencilla instalación y operación en CLI permite crear escenarios de uso y realizar múltiples llamadas API al sistema. La razón de elegir Artillery es que a diferencia de comandos como nmap, se se dispone de captura de resultados para su uso en otras consultas. Esto permite que se realice las pruebas sobre ambos módulos de creación y validación de permisos, ya que se captura la id del permiso en su creación. Existen otras herramientas como JMeter o Gatling, sin embargo traen demasiada complejidad al usar grabaciones manuales del flujo o utilizar scripts mas complejos, es por esto que se considera artillery como la opción más adecuada.
 
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+```sh
+# artillery/artillery.yml
+config:
+  target: "http://167.172.244.128:8080"
+  phases:
+    - duration: 10
+      arrivalRate: 1
+  payload:
+    path: "form_values.csv"
+    fields:
+      - "name"
+      - "rut"
+      - "motive"
+      - "address"
+  environments:
+    low:
+      phases:
+        - duration: 60
+          arrivalRate: 2
+          rampTo: 10
+    medium:
+      phases:
+        - duration: 60
+          arrivalRate: 5
+          rampTo: 10
+        - duration: 60
+          arrivalRate: 10
+    high:
+      phases:
+        - duration: 120
+          arrivalRate: 10
+          rampTo: 15
+        - duration: 60
+          arrivalRate: 15
+          rampTo: 30
+    stress:
+      phases:
+        - duration: 120
+          arrivalRate: 30
+        - duration: 120
+          arrivalRate: 30
+          rampTo: 60
+scenarios:
+  - name: "Fill and send form"
+    flow:
+      - get:
+         url: "/"
+      - think: 3
+      - get:
+         url: "/nuevo"
+      - think: 10
+      - post:
+         url: "/api/create"
+         json:
+          name: "{{name}}"
+          rut: "{{rut}}"
+          motive: "{{motive}}"
+          address: "{{address}}"
+         capture:
+          json: $.id
+          as: "id"
+      - think: 5
+      - get:
+         url: "/validar/{{ id }}"
+         ifTrue: "id"
+```
 
-   [dill]: <https://github.com/joemccann/dillinger>
-   [git-repo-url]: <https://github.com/joemccann/dillinger.git>
-   [john gruber]: <http://daringfireball.net>
-   [df1]: <http://daringfireball.net/projects/markdown/>
-   [markdown-it]: <https://github.com/markdown-it/markdown-it>
-   [Ace Editor]: <http://ace.ajax.org>
-   [node.js]: <http://nodejs.org>
-   [Twitter Bootstrap]: <http://twitter.github.com/bootstrap/>
-   [jQuery]: <http://jquery.com>
-   [@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
-   [express]: <http://expressjs.com>
-   [AngularJS]: <http://angularjs.org>
-   [Gulp]: <http://gulpjs.com>
+En resumen, el experimento consiste en 4 niveles de carga "low", "medium", "high" y "stress"
+- **low:** Entran 2 usuarios virtuales (VU) cada segundo, aumentando progresivamente hasta 10 por segundo durante 1 minuto. En total 362 VU
+- **medium:** Entran 5 usuarios por segundo aumentando progresivamente hasta llegar a 10 por segundo durante 1 minuto, luego entran 10 usuarios por segundo durante 1 minuto. En total 1069 VU
+- **high:** Entran 10 usuarios por segundo aumentando progresivamente hasta 15 usuarios por segundo durante 2 minutos, luego aumenta hasta 30 usuarios por segundo en un intervalo de 1 minuto. En total 2873 VU
+- **stress:** Entran 30 usuarios por segundo durante 2 minutos, luego aumentan progresivamente hasta 60 usuarios por segundo en un período de 2 minutos. En total 9030 VU
 
-   [PlDb]: <https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md>
-   [PlGh]: <https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md>
-   [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
-   [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
-   [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
-   [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
+Cada VU realiza un flujo, que se encuentra bajo "scenarios:". Este flujo contiene 4 consultas al servidor en total. Una representación gráfica se puede ver a continuación:
+
+![scenario](./artillery/scenario.png)
+
+## Resultados
+
+Los resultados completos y gráficos se encuentran la carpeta /artillery, se muestran los resultados a través del plugin de monitoreo que provee DigitalOcean. Se marcan en los gráficos el período de tiempo en que se realizan los 4 niveles de cargas.
+
+![](./artillery/results.png)
+
+Artillery crea un reporte automáticamente sobre los resultados obtenidos. Se compone inicialmente de los datos agregados del total de las pruebas, y de los resultados intermedios cada 10 segundos. Resumiendo la información obtenida en los reportes de artillery, se construye la siguiente tabla comparativa. Estos corresponden a los valores agregados del test completo. RPS mean significa la media del número de requests completadas por segundo. Los valores Min/Max/Median/p95 corresponden a las latencias totales del escenario en promedio, medido en milisegundos. p95 indica el percentil 95 promedio de las latencias obtenidas.
+
+| Test | Total Requests | Completed Requests (%) | RPS mean | Min | Max | Median | p95 |
+| -- | -- | -- | -- | -- | -- | -- | -- |
+| low | 1448 | 1448 (100%) | 18.48 | 143 | 1666 | 173 | 345 |
+| medium | 4276 | 2799 (65.5%) | 15.96 | 144.4 | 88577 | 310.4 | 2490 |
+| high | 11492 | 8289 (72.1%) | 28.13 | 142.5 | 115913 | 1340.5 | 20833 |
+| stress | 36120 | 11174 (30.9%) | 42.66 | 142.8 | 117413 | 4999.7 | 34111 |
+
+Todas las consultas completadas entregaron status 200, sin embargo ocurrieron distintos errores:
+
+| Test | ECONNRESET | ETIMEDOUT | ESOCKETTIMEDOUT |
+| -- | -- | -- | -- |
+| low | 0 | 0 | 0 |
+| medium | 199 | 278 | 1 |
+| high | 1254 | 386 | 746 |
+| stress | 2638 | 4681 | 4634 |
+
+## Conclusiones
+
+El análisis del sistema desde la perspectiva de sistemas distribuidos ayuda a identificar las falencias y proyectar lo que ocurriría al llevarlo a producción. Si bien un sistema como este tiene potenciales problemas de disponibilidad, la implementación y despliegue es sencillo, además de tener una reducida latencia al contener todos sus componentes en un ambiente local. Sin embargo, un ambiente monolítico no es sustentable como sistema de escala por muchas razones. Luego de realizar las pruebas de estrés y monitoreo se logró aprender de las capacidades reales de este sistema, comprobando la necesidad de los sistemas distribuidos.
+
+Se puede ver que el sistema no tiene la capacidad para suportar las pruebas realizadas, el límite de estrés, considerando aquel sin errores de conexión, se encuentra entre los niveles low y medium. Un factor que puede haber influido en el número de casos completados es que si falla la creación del formulario, falla también la validación a causa de la condición configurada dentro del flujo (el total de consultas es el ideal, pero a causa de la condición se realiza un número menor). Los VU tampoco realizan reintentos, por lo que cualquier tipo de error es considerado un fallo definitivo de esa consulta. 
+
+Se puede ver el efecto de la concurrencia en el valor del RPS, creaciendo a medida que aumenta el número de consultas. Esto le da un mejor desempeño pero no es posible responder a tiempo todas las consultas, ocurriendo errores de conexión y timeout. Tampoco se tiene la capacidad de respuesta necesaria ya que todo depende del servidor monolítico, sin contar replicaciones o balanceo de carga.
+
+Observando los gráficos de monitoreo, se observa que no se aprovecha todas las capacidades del servidor:
+- CPU no supera el 15% en las pruebas, y pruebas de mucho mayor carga como "stress" pueden tener incluso menor uso del CPU que una prueba con menor carga como "high".
+- Entre la primera prueba "low" y la última "stress", el uso de la memoria es menor a 70%, aumentando menos del 20%. Esto significa que no ocurre swapping, y es corroborado con el bajo uso del disco.
+- El gráfico de carga (Load 1/5/15) se refiere a la razon de procesos activos y en espera, a la capacidad total del CPU. Las variaciones 1/5/15 afecta el intervalo de tiempo en la calculación, lo que no es relevante. Sin embargo, esto muestra que podrían existir más procesos en la CPU en ejecución y espera.
+
+Esto da a entender que es posible incluir réplicas mientras que no se supere la capacidad de la memoria para evitar swapping. La estrategia es aumentar el procesamiento de consultas a la CPU manteniendo controlado el uso de la memoria (dado que no se posee suficiente crédito en Digital Ocean para mejorar el servidor). 
+
+Dado este análisis se proponen dos alternativas para mejorar el sistema:
+
+(1) Separar módulos backend y frontend: Hacer el proceso de validación como un módulo del backend independiente para así dividir la carga de trabajo. Evaluar el efecto de la separación del frontend.
+
+(2) Utilizar Kubernetes: Kubernetes permite crear réplicas del sistema monolítico actual, para así aplicar un balanceador de carga. Se puede aplicar la alternativa (1) con Kubernetes, sin embargo es probable que se supere la capacidad de la memoria disponible y empeore el sistema actual.
+
+Estas alternativas y otras posibles se evaluarán dependiendo de las capacidades del servidor, y se desarrollarán en la siguiente entrega del caso de prueba.
