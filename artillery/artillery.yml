@@ -1,5 +1,6 @@
 config:
   target: "http://172.23.0.220/"
+#  target: "http://167.172.244.128:8080"
   phases:
     - duration: 10
       arrivalRate: 1
@@ -18,18 +19,26 @@ config:
           rampTo: 10
     medium:
       phases:
-        - duration: 30
+        - duration: 60
           arrivalRate: 5
           rampTo: 10
         - duration: 60
           arrivalRate: 10
     high:
       phases:
-        - duration: 30
+        - duration: 120
           arrivalRate: 10
+          rampTo: 15
         - duration: 60
           arrivalRate: 15
           rampTo: 30
+    stress:
+      phases:
+        - duration: 120
+          arrivalRate: 30
+        - duration: 120
+          arrivalRate: 30
+          rampTo: 60
 scenarios:
   - name: "Fill and send form"
     flow:
@@ -51,6 +60,6 @@ scenarios:
           as: "id"
       - think: 5
       - get:
-         url: "/validate/{{ id }}"
+         url: "/validar/{{ id }}"
          ifTrue: "id"
 
