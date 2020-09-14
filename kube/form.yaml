@@ -1,0 +1,78 @@
+# redirect all traffic to a service
+#apiVersion: extensions/v1beta1
+#kind: Ingress
+#metadata:
+#  name: test-ingress
+#spec:
+#  backend:
+#    serviceName: form
+#    servicePort: 8080
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+spec:
+  tls:
+  - secretName: tls-secret
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: form
+          servicePort: 8080
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: form
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: form
+  template:
+    metadata:
+      labels:
+        app: form
+    spec:
+      containers:
+        - name: form
+          image: asdfghjkln/form:v1
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: MONGO_URL
+#              value: mongodb://mongo:27017/form
+              value: mongodb://10.97.111.8:27017/form
+#          imagePullPolicy: Always
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: form
+  labels:
+    app: form
+spec:
+#  type: LoadBalancer
+#  type: NodePort
+  selector:
+    app: form
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: http
+#      nodePort: 30080
+#  externalIPs: # Not working
+#    - 167.172.244.128
+
+          
