@@ -284,6 +284,8 @@ En esta sección se presentan cambios en el diseño arquitecturar del sistema an
 
 La nueva arquitectura se muestra a continuación:
 
+![](./deploy_pep2.png)
+
 ### Descripción de las herramientas
 
 Para esta entrega se implementan las siguientes herramientas:
@@ -313,9 +315,15 @@ El flujo de consultas es el siguiente:
  - Metallb gestiona las requests recepcionadas por el proxy, aplicando un algoritmo round robin para el balanceador de carga hacia las réplicas de los Pods del servicio.
  - Los servicios se comunican con la/las bases de datos a través de una red privada (sólo permite conexiones dentro de la subnet de Docker)
  
+## Mejoras de la arquitectura
 
+Se mencionarán la lista de características que se marcaron como incumplidas en la primera entrega PEP1. Esto asume que las no mencionadas se encuentran solucionadas con la arquitectura propuesta.
 
-
-
-
+ - Transparencia (Acceso): Se debe conseguir un nombre del dominio que disponga de la posibilidad de fijar subdominios para hacer uso eficiente del redireccionamiento de Ingress. Ej. formulario.comisariavirtual.cl para el formulario y validar.comisariavirtual.cl para la validación de permisos.
+ - Transparencia (Replicación): Se puede mejorar la replicación actual si se particionara la base de datos en varias réplicas, de manera que no se genere un bottleneck en ese componente (desaprovechando la replicación del backend). Para el usuario no debería ser afectado por estos cambios ya que Kubernetes los administra internamente
+ - Transparencia (Concurrencia): El balanceador de carga provisto por Metallb en Ingress se encarga de la concurrencia, repartiendo carga entre los distintos servidores del backend
+ - Transparencia (Fallos): Al implementar réplicas se puede contar con una mayor disponibilidad y respaldos ante fallas de los Pods, esto es, asumiendo que se moverán las réplicas a distintos droplets DigitalOcean.
+ - Apertura (Interoperabilidad): El sistema sigue siendo el mismo en término de sus funcionalidades, pero si llegara a interconectarse con otros sistemas (ej. Servidores del Ministerio, Carabineros de Chile, etc.) se tendría que realizar los procesos pertinentes de forma manual.
+- Escalabilidad (Vertical): El sistema sería altamente beneficiado, actualmente existen muchos componentes que sin ninguna consulta están consumiendo un 80% de la memoria RAM. Si el uso de memoria llega a 100% se produce el Swapping, aumentando considerablemente el uso del CPU y la latencia de respuesta. Un servidor con más recursos solucionaría este problema
+- Escalabilidad (Horizontal): El sistema tiene replicaciones, sin embargo no gana mayor beneficio dentro de un sólo Droplet en DigitalOcean. La solución es separarlos escalando horizontalmente en cada réplica, reduciendo el consumo de recursos en el nodo maestro (Kubernetes). También se deberían separar la(s) base(s) de datos y el servidor backend con la funcionalidad de la validación de permisos.
 
