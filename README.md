@@ -333,9 +333,9 @@ Se intentaron realizar las mismas pruebas de carga que en la PEP1, sin embargo, 
 
 Las prueba empleada corresponde a el escenario "low" con artillery, sin embargo se superó la capacidad del CPU con creces (Al rededor de 60 veces la capacidad del CPU según el gráfico de tareas asignadas a éste)
 
-![](./test_images/cpu.png)
-![](./test_images/mem.png)
-![](./test_images/load.png)
+![](./test_images_pep2/cpu.PNG)
+![](./test_images_pep2/mem.PNG)
+![](./test_images_pep2/load.PNG)
 
 ### Conclusiones
 
