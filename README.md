@@ -315,7 +315,7 @@ El flujo de consultas es el siguiente:
  - Metallb gestiona las requests recepcionadas por el proxy, aplicando un algoritmo round robin para el balanceador de carga hacia las réplicas de los Pods del servicio.
  - Los servicios se comunican con la/las bases de datos a través de una red privada (sólo permite conexiones dentro de la subnet de Docker)
  
-## Mejoras de la arquitectura
+### Mejoras de la arquitectura
 
 Se mencionarán la lista de características que se marcaron como incumplidas en la primera entrega PEP1. Esto asume que las no mencionadas se encuentran solucionadas con la arquitectura propuesta.
 
@@ -327,3 +327,22 @@ Se mencionarán la lista de características que se marcaron como incumplidas en
 - Escalabilidad (Vertical): El sistema sería altamente beneficiado, actualmente existen muchos componentes que sin ninguna consulta están consumiendo un 80% de la memoria RAM. Si el uso de memoria llega a 100% se produce el Swapping, aumentando considerablemente el uso del CPU y la latencia de respuesta. Un servidor con más recursos solucionaría este problema
 - Escalabilidad (Horizontal): El sistema tiene replicaciones, sin embargo no gana mayor beneficio dentro de un sólo Droplet en DigitalOcean. La solución es separarlos escalando horizontalmente en cada réplica, reduciendo el consumo de recursos en el nodo maestro (Kubernetes). También se deberían separar la(s) base(s) de datos y el servidor backend con la funcionalidad de la validación de permisos.
 
+### Pruebas realizadas
+
+Se intentaron realizar las mismas pruebas de carga que en la PEP1, sin embargo, inesperadamente se superó la capacidad del sistema (100% CPU) por un largo tiempo impidiendo su uso, lo que llevó a la pérdida de los resultados realizados. Es por esto que sólo se cuenta con la información del hardware del sistema.
+
+Las prueba empleada corresponde a el escenario "low" con artillery, sin embargo se superó la capacidad del CPU con creces (Al rededor de 60 veces la capacidad del CPU según el gráfico de tareas asignadas a éste)
+
+![](./test_images/cpu.png)
+![](./test_images/mem.png)
+![](./test_images/load.png)
+
+### Conclusiones
+
+El sistema no soporta una cantidad baja de requests ya que se sobrecarga el uso del CPU. Curiosamente, en la primera entrega se tenían problemas por el desuso del CPU. Se tiene como hipótesis que el alto uso de la memoria causa que el SO active de forma prematura el proceso que realiza el swapping. Se revisa usando el comando "top" que el proceso "kswapd0" utilizaba entre un 30%-90% de la CPU. Además, para implementar Kubernetes de manera bare metal, se requiere una gran cantidad de programas ejecutándose, lo que aumenta el uso general de los recursos significativamente en comparación con la primera entrega.
+
+Si bien no se pudo lograr el correcto funcionamiento de la aplicación, se tiene confianza en que una arquitectura como esta puede llegar a ser efectiva si se cuenta con los recursos suficientes. Esto sin duda requiriendo un escalamiento horizontal en distintos servidores físicos para evitar una sobrecarga como ocurrió en esta experiencia.
+
+A través de la implementación bare metal de Kubernetes, se aprendió sobre tecnologías como Metallb e Ingress, así como también los aspectos internos de Kubernetes, ruteo en subnet, puertos, forwarding, balanceo de carga, entre otros. Este aprendizaje no podría darse con este nivel de profundidad si se utilizara servicios "plug and play" de los servidores cloud. 
+
+Finalmente, se logra apreciar los diversos problemas que los sistemas distribuidos deben superar para lograr una mayor calidad del servicio. Aspectos como la transparencia son elementos que pueden pasar desapersibido, pero que sin duda son claves para un buen sistema informático. Se tiene con este caso de estudio la experiencia para apuntar a sistemas distribuidos con una mayor calidad en el futuro
