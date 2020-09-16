@@ -13,6 +13,8 @@ Documentación sobre la arquitectura de los casos de estudio (PEP) Distribuidos 
     - Experimentos
     - Resultados
     - Conclusiones
+- PEP2
+    - Arquitectura propuesta
 
 # Introducción
 
@@ -274,3 +276,46 @@ Dado este análisis se proponen dos alternativas para mejorar el sistema:
 (2) Utilizar Kubernetes: Kubernetes permite crear réplicas del sistema monolítico actual, para así aplicar un balanceador de carga. Se puede aplicar la alternativa (1) con Kubernetes, sin embargo es probable que se supere la capacidad de la memoria disponible y empeore el sistema actual.
 
 Estas alternativas y otras posibles se evaluarán dependiendo de las capacidades del servidor, y se desarrollarán en la siguiente entrega del caso de prueba.
+
+
+## PEP 2
+
+En esta sección se presentan cambios en el diseño arquitecturar del sistema anterior, con el objetivo de enfrentar falencias identificadas en la sección anterior.
+
+La nueva arquitectura se muestra a continuación:
+
+### Descripción de las herramientas
+
+Para esta entrega se implementan las siguientes herramientas:
+
+#### Kubernetes
+
+Sistema orquestador de contenedores Dockers, permitiendo el despliegue y escalamiento de la aplicación por medio de servicios y load balancing dentro de una red virtual. La instalación del cliente del cluster Kubernetes se hace a través de ![Kind](https://kind.sigs.k8s.io/docs/user/quick-start/), herramienta que lo despliega dentro de un contenedor Docker liviano (Existen otras alternativas como Minikube que utilizan VMs, pero requieren más almacenamiento que el límite del servidor)
+
+#### Nginx Ingress
+
+Software que permite actuar como proxy inverso, exponiendo una IP al exterior que recibe las solicitudes externas y redirigiéndolas a los servicios dentro del cluster de Kubernetes.
+
+#### Metallb
+
+Software que permite implementar balanceo de carga entre los distintos Pods de un servicio de Kubernetes. Es una alternativa gratuita a los sistemas pagados de servidores cloud (OpenCloud, AWS, Azure, DigitalOcean, etc). Se elige no utilizar los servicios de Kubernetes provistos por DigitalOcean, por lo que se trabaja en una implementación "bare metal". Para lograrlo, Metallb es una de las herramientas más conocidas.
+
+### Descripción de la arquitectura
+
+La arquitectura cuenta con 4 replicaciones de los Pods del backend, incluyendo el frontend embebido a este. Se ha propuesto la replicación de las bases de datos, sin embargo no se implementa por la necesidad de herramientas que garanticen la consistencia de los datos distribuidos.
+
+Idealmente, se trataría la validación como un servicio aparte del backend para la creación de formularios, sin embargo dado a las restricciones de modificación del software y tiempo restante, no se realiza. Se plantea también la replicación para este servicio de validación de permisos.
+
+El flujo de consultas es el siguiente:
+ - Las consultas de los browsers de los usuarios ingresan al servidor único de DigitalOcean.
+ - Son recepcionados por Nginx Ingress, desplegado como servicio de Kubernetes con la IP externa. Esta IP es provista por un controlador de Ingress que está configurada para asignarle un espacio de las IP disponibles.
+ - Ingress también permite el redireccionamiento de los servicios en base a la URL, en el diagrama se ve como se estaría separando las consultas según su subdominio. (El subdominio es hipotético ya que no se cuenta con DNS aún)
+ - Metallb gestiona las requests recepcionadas por el proxy, aplicando un algoritmo round robin para el balanceador de carga hacia las réplicas de los Pods del servicio.
+ - Los servicios se comunican con la/las bases de datos a través de una red privada (sólo permite conexiones dentro de la subnet de Docker)
+ 
+
+
+
+
+
+
